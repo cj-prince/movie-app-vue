@@ -48,13 +48,23 @@ export default {
   },
   methods:{
     
-    search(){
-      this.loading = true;
-      searchMovie(this.searchKeyword).then((res) => (
-        this.$store.dispatch('updateList', res.data.Search),
+    async search(){
+      try {
+        this.loading = true;
+        const response = await searchMovie(this.searchKeyword)
+        const data = response.data
+        if (data.Response === 'True'){
+          const movieList = response.data.Search 
+          this.$store.dispatch('updateList', movieList)
+          this.loading = false
+        }
+      } catch (error) {
+        console.log(error)
+      } finally{
         this.loading = false
-        ))
-      .catch((err) => console.log(err))
+      }
+     
+      
     },
 
     goToMovie(movieId){
