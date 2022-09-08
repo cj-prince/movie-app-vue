@@ -1,12 +1,17 @@
+import { singleMovie } from '@/api/movies';
 <template>
   <div class="about">
-    <h1>This is single page</h1>
+    <singleMovie/>
   </div>
 </template>
 
 <script>
+import singleMovie from '@/components/SingleMovie.vue'
 export default {
   name: 'SingleView',
+  components:{
+    singleMovie
+  }
 
 }
 </script>

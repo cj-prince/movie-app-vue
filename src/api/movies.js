@@ -1,10 +1,15 @@
 import axios from "axios";
 
-const Url = 'http://www.omdbapi.com/?apikey=54395adb&'
+const Url = 'http://www.omdbapi.com/?apikey=54395adb'
+
 
 function searchMovie(searchPhrase){
   return axios.get(`${Url}&s=${searchPhrase}`)
 }
 
-console.log(searchMovie())
-export {searchMovie}
+function singleMovie(movieId){
+  return axios.get(`${Url}&i=${movieId}`)
+}
+
+
+export {searchMovie, singleMovie}

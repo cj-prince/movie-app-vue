@@ -4,10 +4,10 @@
       <input type="text" v-model="searchKeyword" placeholder="Enter movie title... " >
       <button class="btn btn-primary" >Search</button>
     </form>
-
-    <div class="loading" v-if="loading">
-    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    <div class="error">
+      {{error}}
     </div>
+    <loadingState v-if="loading"/>
 
     <div class="img" v-if="!movieList.length && !loading">
       <img src="@/assets/Group.png" alt="">
@@ -33,38 +33,23 @@
 <script>
 // @ is an alias to /src
 
-import {mapState} from 'vuex'
-import {searchMovie} from '@/api/movies'
+import {mapActions, mapState} from 'vuex'
+
 
 export default {
   name: 'HomeView',
   data: () => ({
     searchKeyword:'',
-    loading: false
   }),
 
   components: {
    
   },
   methods:{
+    ...mapActions(['fetchMovies','clearList']),
     
-    async search(){
-      try {
-        this.loading = true;
-        const response = await searchMovie(this.searchKeyword)
-        const data = response.data
-        if (data.Response === 'True'){
-          const movieList = response.data.Search 
-          this.$store.dispatch('updateList', movieList)
-          this.loading = false
-        }
-      } catch (error) {
-        console.log(error)
-      } finally{
-        this.loading = false
-      }
-     
-      
+    search(){
+      this.fetchMovies(this.searchKeyword)
     },
 
     goToMovie(movieId){
@@ -72,11 +57,11 @@ export default {
     }
   },
   computed:{
-    ...mapState(['movieList'])
+    ...mapState(['movieList', 'loading', 'error'])
   },
 
   // mounted(){
-  //   this.$store.dispatch('clearList')
+  //   this.clearList()
   // }
 }
 </script>
@@ -125,6 +110,14 @@ export default {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
     border-radius: 68px;
     cursor: pointer;
+  }
+
+  .error{
+    text-align: center;
+    margin-block: 1rem;
+    color: #C53939;
+    font-size: 32px;
+    font-weight:800;
   }
 
   .img{
@@ -176,93 +169,5 @@ export default {
     text-transform: capitalize;
   }
 
-  .loading{
-    min-height: 400px;
-    display: grid;
-    place-content: center;
-  }
-  .lds-roller {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-roller div {
-  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  transform-origin: 40px 40px;
-}
-.lds-roller div:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #fff;
-  margin: -4px 0 0 -4px;
-}
-.lds-roller div:nth-child(1) {
-  animation-delay: -0.036s;
-}
-.lds-roller div:nth-child(1):after {
-  top: 63px;
-  left: 63px;
-}
-.lds-roller div:nth-child(2) {
-  animation-delay: -0.072s;
-}
-.lds-roller div:nth-child(2):after {
-  top: 68px;
-  left: 56px;
-}
-.lds-roller div:nth-child(3) {
-  animation-delay: -0.108s;
-}
-.lds-roller div:nth-child(3):after {
-  top: 71px;
-  left: 48px;
-}
-.lds-roller div:nth-child(4) {
-  animation-delay: -0.144s;
-}
-.lds-roller div:nth-child(4):after {
-  top: 72px;
-  left: 40px;
-}
-.lds-roller div:nth-child(5) {
-  animation-delay: -0.18s;
-}
-.lds-roller div:nth-child(5):after {
-  top: 71px;
-  left: 32px;
-}
-.lds-roller div:nth-child(6) {
-  animation-delay: -0.216s;
-}
-.lds-roller div:nth-child(6):after {
-  top: 68px;
-  left: 24px;
-}
-.lds-roller div:nth-child(7) {
-  animation-delay: -0.252s;
-}
-.lds-roller div:nth-child(7):after {
-  top: 63px;
-  left: 17px;
-}
-.lds-roller div:nth-child(8) {
-  animation-delay: -0.288s;
-}
-.lds-roller div:nth-child(8):after {
-  top: 56px;
-  left: 12px;
-}
-@keyframes lds-roller {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+
 </style>
