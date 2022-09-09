@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <form class="input-container" @submit.prevent="search">
+    <form class="input-container" @submit.prevent="search(1)">
       <input type="text" v-model="searchKeyword" placeholder="Enter movie title... " >
       <button class="btn btn-primary" >Search</button>
     </form>
@@ -26,7 +26,11 @@
         </div>
       </div>
     </div>
-
+    <div class="pagination" v-if="movieList.length > 0">
+      <div :class="['page', {'active': page === currentPage}]" v-for="page in totalPages" :key="page" @click="currentPage = page">
+        {{page}}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,16 +44,24 @@ export default {
   name: 'HomeView',
   data: () => ({
     searchKeyword:'',
+    currentPage: 1,
   }),
 
   components: {
    
   },
   methods:{
-    ...mapActions(['fetchMovies','clearList']),
+    ...mapActions(['fetchMovies','clearList',]),
     
-    search(){
-      this.fetchMovies(this.searchKeyword)
+    search(page){
+      if(page){
+        this.currentPage = page
+      }
+      const options ={
+        searchPhrase: this.searchKeyword,
+        page: this.currentPage
+      }
+      this.fetchMovies(options)
     },
 
     goToMovie(movieId){
@@ -57,12 +69,20 @@ export default {
     }
   },
   computed:{
-    ...mapState(['movieList', 'loading', 'error'])
+    ...mapState(['movieList', 'loading', 'error', 'totalResult']),
+    totalPages(){
+      return Math.ceil(this.totalResult/10) 
+    }
   },
 
   // mounted(){
   //   this.clearList()
-  // }
+  // },
+  watch:{
+    currentPage(){
+      this.search();
+    }
+  }
 }
 </script>
 
@@ -77,6 +97,9 @@ export default {
     display: flex;
     margin-top: 72px;
     margin-inline: auto;
+    position: sticky;
+    top: 72px;
+    z-index: 1;
   }
 
   .input-container input{
@@ -168,6 +191,34 @@ export default {
   .type{
     text-transform: capitalize;
   }
+
+  .pagination{
+    display: flex;
+    gap: 4px;
+    width: 50%;
+    overflow: auto;
+    margin-block: 32px;
+    margin-inline: auto;
+  }
+  
+  .page{
+    min-width: 40px;
+    height: 40px;
+    display: grid;
+    place-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+  .page:hover{
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .active{
+    background: #C53939
+  }
+  
 
 
 </style>

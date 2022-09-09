@@ -6,7 +6,8 @@ export default createStore({
     movieList: [],
     singleList: [],
     loading: false,
-    error: null
+    error: null,
+    totalResult: 1
   },
   getters: {
   },
@@ -22,6 +23,9 @@ export default createStore({
     },
     SET_MOVIE(state, movieObj){
       state.singleList = movieObj
+    },
+    SET_RESULT_COUNT(state, count){
+      state.totalResult = parseInt(count) 
     }
   },
   actions: {
@@ -31,14 +35,18 @@ export default createStore({
     clearList({commit}){
       commit('UPDATE_LIST', [])
     },
-    async fetchMovies({commit}, searchPhrase){
+    async fetchMovies({commit}, option){
       try {
+        const {searchPhrase, page} = option
         commit('SET_LOADING', true)
-        const response = await searchMovie(searchPhrase)
+        const response = await searchMovie(searchPhrase, page)
         const data = response.data
+        
         if (data.Response === 'True'){
           const movieList = response.data.Search 
+          const totalResult = response.data.totalResults
           commit('UPDATE_LIST', movieList)
+          commit('SET_RESULT_COUNT', totalResult)
           commit('SET_ERROR', null)
         }else{
           commit('UPDATE_LIST', [])
@@ -67,5 +75,7 @@ export default createStore({
     }
   },
   modules: {
-  }
+  },
+
+  
 })

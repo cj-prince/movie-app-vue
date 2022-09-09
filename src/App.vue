@@ -21,7 +21,11 @@ export default {
 body{
   margin: 0;
   background-color: #242222;
-  color: white
+  background-image: url("@/assets/foot.png");
+  color: white;
+  background-attachment: fixed;
+  background-repeat: no-repeat; 
+  background-position:bottom;
 }
 
 .container{

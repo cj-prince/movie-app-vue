@@ -1,14 +1,15 @@
 import axios from "axios";
 
-const Url = 'http://www.omdbapi.com/?apikey=54395adb'
+const Url = 'http://www.omdbapi.com/'
+const apiKey = process.env.VUE_APP_OMDB_API_KEY
 
 
-function searchMovie(searchPhrase){
-  return axios.get(`${Url}&s=${searchPhrase}`)
+function searchMovie(searchPhrase, page = 1){
+  return axios.get(`${Url}?apikey=${apiKey}&s=${searchPhrase}&page=${page}`)
 }
 
 function singleMovie(movieId){
-  return axios.get(`${Url}&i=${movieId}`)
+  return axios.get(`${Url}?apikey=${apiKey}&i=${movieId}`)
 }
 
 
