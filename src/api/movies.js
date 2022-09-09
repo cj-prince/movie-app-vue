@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const Url = 'http://www.omdbapi.com/'
+const Url = 'https://www.omdbapi.com/'
 const apiKey = process.env.VUE_APP_OMDB_API_KEY
 
 
